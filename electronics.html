@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU Shop - Electronics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo h2 {
+            color: #fff;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #3498db;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .category-nav h1 {
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .category-nav p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .category-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .category-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Electronics Section */
+        .electronics-section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+        }
+
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: #2980b9;
+        }
+
+        .electronics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .electronics-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .electronics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .electronics-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .electronics-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .electronics-info h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .electronics-info .brand {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .electronics-info .category {
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .electronics-info p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .specs {
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .specs span {
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .electronics-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0 0;
+            margin-top: 3rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none; /* For simplicity, in a real project you'd add a hamburger menu */
+            }
+            
+            .electronics-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="category-nav">
+        <h1>KU Electronics Store</h1>
+        <p>Find all your academic electronics needs at student-friendly prices</p>
+        
+    </div>
+
+    <section class="electronics-section" id="electronics">
+        <div class="container">
+            <h2 class="section-title">Academic Electronics</h2>
+            <p class="section-subtitle">Essential electronics for your studies, from laptops to calculators</p>
+            
+            <div class="category-filter">
+                <button class="category-btn active" data-category="all">All Electronics</button>
+                <button class="category-btn" data-category="laptops">Laptops & Computers</button>
+                <button class="category-btn" data-category="tablets">Tablets & E-Readers</button>
+                <button class="category-btn" data-category="accessories">Accessories</button>
+                <button class="category-btn" data-category="calculators">Calculators</button>
+                <button class="category-btn" data-category="audio">Audio Equipment</button>
+            </div>
+            
+            <div class="electronics-grid">
+                <!-- Product 1 -->
+                <div class="electronics-card" data-category="laptops">
+                    <img src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Student Laptop Bundle">
+                    <div class="electronics-info">
+                        <h3>Student Laptop Bundle</h3>
+                        <p class="brand">Dell Inspiron 15</p>
+                        <p class="category">Laptops & Computers</p>
+                        <p>Powerful laptop with backpack and accessories perfect for academic needs.</p>
+                        <div class="specs">
+                            <span><strong>Specs:</strong> Intel i5, 8GB RAM, 512GB SSD</span>
+                            <span><strong>Includes:</strong> Backpack, Mouse, Headphones</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 2,450,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="electronics-card" data-category="tablets">
+                    <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="iPad Air">
+                    <div class="electronics-info">
+                        <h3>iPad Air with Apple Pencil</h3>
+                        <p class="brand">Apple</p>
+                        <p class="category">Tablets & E-Readers</p>
+                        <p>Perfect for note-taking, reading, and creative projects with Apple Pencil support.</p>
+                        <div class="specs">
+                            <span><strong>Specs:</strong> 10.9" Display, A14 Chip, 64GB</span>
+                            <span><strong>Includes:</strong> Apple Pencil, Protective Case</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 1,850,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="electronics-card" data-category="accessories">
+                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Wireless Keyboard & Mouse">
+                    <div class="electronics-info">
+                        <h3>Wireless Keyboard & Mouse Set</h3>
+                        <p class="brand">Logitech</p>
+                        <p class="category">Accessories</p>
+                        <p>Ergonomic wireless keyboard and mouse set for comfortable studying sessions.</p>
+                        <div class="specs">
+                            <span><strong>Connectivity:</strong> Bluetooth 5.0, USB Receiver</span>
+                            <span><strong>Battery:</strong> 24 months keyboard, 12 months mouse</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 120,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="electronics-card" data-category="calculators">
+                    <img src="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Scientific Calculator">
+                    <div class="electronics-info">
+                        <h3>Advanced Scientific Calculator</h3>
+                        <p class="brand">Texas Instruments</p>
+                        <p class="category">Calculators</p>
+                        <p>Advanced calculator with functions for engineering and mathematics courses.</p>
+                        <div class="specs">
+                            <span><strong>Functions:</strong> 300+ including calculus, statistics</span>
+                            <span><strong>Display:</strong> High-resolution LCD with equation display</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 55,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 5 -->
+                <div class="electronics-card" data-category="audio">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Noise-Cancelling Headphones">
+                    <div class="electronics-info">
+                        <h3>Noise-Cancelling Headphones</h3>
+                        <p class="brand">Sony</p>
+                        <p class="category">Audio Equipment</p>
+                        <p>High-quality headphones for focused studying in noisy environments like libraries.</p>
+                        <div class="specs">
+                            <span><strong>Features:</strong> Active noise cancellation, 30hr battery</span>
+                            <span><strong>Connectivity:</strong> Bluetooth 5.0, 3.5mm jack</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 350,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 6 -->
+                <div class="electronics-card" data-category="accessories">
+                    <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Portable SSD">
+                    <div class="electronics-info">
+                        <h3>Portable SSD 1TB</h3>
+                        <p class="brand">Samsung</p>
+                        <p class="category">Accessories</p>
+                        <p>High-speed portable storage for backing up projects and transferring large files.</p>
+                        <div class="specs">
+                            <span><strong>Speed:</strong> Read 1050MB/s, Write 1000MB/s</span>
+                            <span><strong>Durability:</strong> Shock resistant, metal enclosure</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 480,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 7 -->
+                <div class="electronics-card" data-category="tablets">
+                    <img src="https://images.unsplash.com/photo-1623125016177-8a3c6c5680dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="E-Reader">
+                    <div class="electronics-info">
+                        <h3>E-Reader for Textbooks</h3>
+                        <p class="brand">Amazon Kindle</p>
+                        <p class="category">Tablets & E-Readers</p>
+                        <p>Paper-like display perfect for reading textbooks without eye strain.</p>
+                        <div class="specs">
+                            <span><strong>Storage:</strong> 32GB (holds thousands of textbooks)</span>
+                            <span><strong>Battery:</strong> Weeks of battery life</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 420,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 8 -->
+                <div class="electronics-card" data-category="audio">
+                    <img src="https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Bluetooth Earbuds">
+                    <div class="electronics-info">
+                        <h3>Wireless Bluetooth Earbuds</h3>
+                        <p class="brand">JBL</p>
+                        <p class="category">Audio Equipment</p>
+                        <p>Compact wireless earbuds perfect for listening to lectures on the go.</p>
+                        <div class="specs">
+                            <span><strong>Battery:</strong> 6hr playback, 24hr with case</span>
+                            <span><strong>Features:</strong> IPX5 water resistance, touch controls</span>
+                        </div>
+                        <div class="electronics-footer">
+                            <span class="price">UGX 180,000</span>
+                            <button class="btn btn-small btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <h3>KU Marketplace</h3>
+                    <p>The official e-marketplace of Kampala University, providing students, faculty, and staff with academic resources, university merchandise, and campus services.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="textbooks.html">Textbooks</a></li>
+                        <li><a href="#">University Merchandise</a></li>
+                        <li><a href="electronics.html">Electronics</a></li>
+                        <li><a href="Stationery.html">Stationery</a></li>
+                        <li><a href="#">Campus Services</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Student Center, KU Main Campus</li>
+                        <li><i class="fas fa-phone-alt"></i> +256 750 123 456</li>
+                        <li><i class="fas fa-envelope"></i> marketplace@ku.ac.ug</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Kampala University Marketplace. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Category filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.category-btn');
+            const electronicsCards = document.querySelectorAll('.electronics-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Show/hide electronics based on filter
+                    electronicsCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Add to cart functionality
+            const addToCartButtons = document.querySelectorAll('.btn-primary');
+            const cartCount = document.querySelector('.cart-count');
+            let cartItems = 0;
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    cartItems++;
+                    cartCount.textContent = cartItems;
+                    
+                    // Show confirmation message
+                    const productTitle = this.parentElement.parentElement.querySelector('h3').textContent;
+                    alert(`Added "${productTitle}" to your cart!`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

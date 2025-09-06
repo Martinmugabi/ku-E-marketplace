@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU Campus Services with Live Location</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo h2 {
+            color: #fff;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #3498db;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .category-nav h1 {
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .category-nav p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .category-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .category-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Campus Services Section */
+        .services-section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .service-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-info h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .service-info .category {
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-info p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .order-preview {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .order-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .delivery-options {
+            margin: 1rem 0;
+        }
+
+        .delivery-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delivery-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .delivery-option input {
+            margin-right: 10px;
+        }
+
+        .payment-fields {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .order-summary {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .confirmation-message {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .confirmation-message i {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        /* Location Services */
+        .location-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        #map {
+            height: 400px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .location-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .location-status {
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Receipt Styles */
+        .receipt {
+            background: white;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .receipt-details {
+            margin-bottom: 20px;
+        }
+
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #eee;
+        }
+
+        .receipt-total {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0 0;
+            margin-top: 3rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .order-preview {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .location-controls {
+                flex-direction: column;
+            }
+        }
+
+        /* Service Specific Styles */
+        .service-features {
+            margin: 1rem 0;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature i {
+            color: #3498db;
+            margin-right: 10px;
+        }
+
+        .delivery-fee {
+            font-size: 0.9rem;
+            color: #e74c3c;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="category-nav">
+        <h1>KU Campus Services</h1>
+        <p>Convenient services to support your academic journey</p>
+        
+    </div>
+
+    <section class="services-section" id="services">
+        <div class="container">
+            <h2 class="section-title">Campus Services</h2>
+            <p class="section-subtitle">Essential services to make your campus life easier</p>
+            
+            <!-- Live Location Section -->
+            <div class="location-section">
+                <div class="location-header">
+                    <h3>Live Location Services</h3>
+                    <div id="locationStatus" class="location-status status-inactive">Location Inactive</div>
+                </div>
+                
+                <p>Enable location sharing to help us provide better delivery services and estimate accurate delivery times.</p>
+                
+                <div class="location-controls">
+                    <button class="btn btn-primary" onclick="startLocationTracking()">
+                        <i class="fas fa-map-marker-alt"></i> Share My Location
+                    </button>
+                    <button class="btn btn-secondary" onclick="stopLocationTracking()">
+                        <i class="fas fa-stop-circle"></i> Stop Sharing
+                    </button>
+                </div>
+                
+                <div id="map"></div>
+                
+                <div id="locationDetails">
+                    <p>Your location will appear here once you enable location sharing. This helps us:</p>
+                    <ul>
+                        <li>Provide accurate delivery time estimates</li>
+                        <li>Optimize delivery routes</li>
+                        <li>Notify you when your delivery is approaching</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1588200908342-23b585c03e26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Printing Service">
+                    <div class="service-info">
+                        <h3>Document Printing & Binding</h3>
+                        <p class="category">Academic Support</p>
+                        <p>Professional printing services for assignments, thesis, and research papers with various binding options.</p>
+                        
+                        <div class="service-features">
+                            <div class="feature">
+                                <i class="fas fa-print"></i>
+                                <span>Black & White and Color Printing</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-book"></i>
+                                <span>Thesis Binding Available</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-clock"></i>
+                                <span>Express Service Option</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-footer">
+                            <span class="price">From UGX 500/page</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Document Printing Service" 
+                                    data-price="500" 
+                                    data-img="https://images.unsplash.com/photo-1588200908342-23b585c03e26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Service
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1560472355-536de3962603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Book Delivery">
+                    <div class="service-info">
+                        <h3>Textbook Delivery Service</h3>
+                        <p class="category">Academic Support</p>
+                        <p>Get your textbooks delivered directly to your hostel, department, or any location on campus.</p>
+                        
+                        <div class="service-features">
+                            <div class="feature">
+                                <i class="fas fa-book"></i>
+                                <span>All textbooks available</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Campus-wide delivery</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-clock"></i>
+                                <span>Same-day delivery available</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-footer">
+                            <span class="price">UGX 5,000 delivery</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Textbook Delivery Service" 
+                                    data-price="5000" 
+                                    data-img="https://images.unsplash.com/photo-1560472355-536de3962603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Service
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Campus Shuttle">
+                    <div class="service-info">
+                        <h3>Campus Shuttle Service</h3>
+                        <p class="category">Transportation</p>
+                        <p>Convenient shuttle service between campuses, hostels, and university facilities.</p>
+                        
+                        <div class="service-features">
+                            <div class="feature">
+                                <i class="fas fa-bus"></i>
+                                <span>Regular scheduled routes</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-clock"></i>
+                                <span>On-demand service available</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-users"></i>
+                                <span>Group discounts available</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-footer">
+                            <span class="price">From UGX 2,000/ride</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Campus Shuttle Service" 
+                                    data-price="2000" 
+                                    data-img="https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Service
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="order-process">
+                <!-- Step 1: Service Details -->
+                <div class="step active" id="step1">
+                    <h2>Service Details</h2>
+                    <div class="order-preview">
+                        <img id="orderImg" src="" alt="">
+                        <div>
+                            <h3 id="orderItem"></h3>
+                            <p class="price" id="orderPrice"></p>
+                        </div>
+                    </div>
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label>Service Details</label>
+                            <textarea id="orderDetails" placeholder="Please provide details about the service you need (e.g., number of pages for printing, specific textbook titles, pickup/delivery locations)"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Use my current location for better service</label>
+                            <div class="delivery-option">
+                                <input type="checkbox" id="useLocation" checked>
+                                <label for="useLocation">Share my location for accurate delivery estimation</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Urgency Level</label>
+                            <select id="urgencyLevel">
+                                <option value="standard">Standard (3-5 business days)</option>
+                                <option value="express">Express (1-2 business days) + UGX 5,000</option>
+                                <option value="urgent">Urgent (Same day) + UGX 10,000</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Contact Method</label>
+                            <select id="contactMethod">
+                                <option value="email">Email</option>
+                                <option value="phone">Phone Call</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="sms">SMS</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
+                    </form>
+                </div>
+                
+                <!-- Step 2: Delivery/Pickup Options -->
+                <div class="step" id="step2">
+                    <h2>Delivery & Pickup Options</h2>
+                    <form id="deliveryForm">
+                        <div class="form-group">
+                            <label>Select Option</label>
+                            <div class="delivery-options">
+                                <div class="delivery-option">
+                                    <input type="radio" id="pickup" name="deliveryOption" value="pickup" checked>
+                                    <label for="pickup">Campus Pickup (Free)</label>
+                                </div>
+                                <div class="delivery-option">
+                                    <input type="radio" id="delivery" name="deliveryOption" value="delivery">
+                                    <label for="delivery">Campus Delivery (+ UGX 5,000)</label>
+                                </div>
+                                <div class="delivery-option">
+                                    <input type="radio" id="expressDelivery" name="deliveryOption" value="expressDelivery">
+                                    <label for="expressDelivery">Express Delivery (+ UGX 10,000)</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="deliveryFields">
+                            <div class="form-group">
+                                <label>Delivery Location</label>
+                                <select id="deliveryLocation">
+                                    <option value="">Select delivery location</option>
+                                    <option value="hostel">Hostel</option>
+                                    <option value="library">Library</option>
+                                    <option value="department">Department Building</option>
+                                    <option value="cafeteria">Cafeteria</option>
+                                    <option value="current">My Current Location</option>
+                                    <option value="other">Other (specify in notes)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Specific Location Details</label>
+                                <input type="text" id="specificLocation" placeholder="e.g., Hostel B, Room 205">
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Delivery Time</label>
+                                <select id="deliveryTime">
+                                    <option value="any">Any time during operating hours</option>
+                                    <option value="morning">Morning (9am - 12pm)</option>
+                                    <option value="afternoon">Afternoon (12pm - 4pm)</option>
+                                    <option value="evening">Evening (4pm - 7pm)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="pickupFields">
+                            <div class="form-group">
+                                <label>Preferred Pickup Location</label>
+                                <select id="pickupLocation">
+                                    <option value="mainLibrary">Main Library</option>
+                                    <option value="studentCenter">Student Center</option>
+                                    <option value="northCampus">North Campus Store</option>
+                                    <option value="southCampus">South Campus Store</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Pickup Date</label>
+                                <input type="date" id="pickupDate">
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 3: Payment -->
+                <div class="step" id="step3">
+                    <h2>Payment Method</h2>
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label>Select Payment Method</label>
+                            <select id="paymentMethod" required>
+                                <option value="">Select method</option>
+                                <option value="mobile_money">Mobile Money</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="cash">Cash on Pickup/Delivery</option>
+                                <option value="student_account">Student Account Billing</option>
+                            </select>
+                        </div>
+                        
+                        <div id="mobileMoneyFields" class="payment-fields">
+                            <div class="form-group">
+                                <label>Mobile Money Provider</label>
+                                <select>
+                                    <option value="mtn">MTN Mobile Money</option>
+                                    <option value="airtel">Airtel Money</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" placeholder="e.g., 0772123456">
+                            </div>
+                        </div>
+                        
+                        <div id="cardFields" class="payment-fields">
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <input type="text" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123">
+                            </div>
+                        </div>
+                        
+                        <div class="order-summary">
+                            <h3>Order Summary</h3>
+                            <p id="summaryItem">Service: </p>
+                            <p id="summaryUrgency">Urgency: </p>
+                            <p id="summaryDelivery">Delivery Option: </p>
+                            <p id="summaryTotal">Total: UGX </p>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="placeOrder()">Complete Order</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 4: Confirmation -->
+                <div class="step" id="step4">
+                    <h2>Order Confirmation</h2>
+                    <div class="confirmation-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Thank You for Your Order!</h3>
+                        <p>Your service request has been received and is being processed.</p>
+                        <div id="orderDetails">
+                            <p><strong>Order #:</strong> <span id="confOrderNumber"></span></p>
+                            <p><strong>Service:</strong> <span id="confItem"></span></p>
+                            <p><strong>Delivery Method:</strong> <span id="confDelivery"></span></p>
+                            <p><strong>Total:</strong> UGX <span id="confTotal"></span></p>
+                            <p><strong>Estimated Completion:</strong> <span id="confCompletion"></span></p>
+                        </div>
+                        <p>You will receive a confirmation message shortly.</p>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="downloadReceipt()">Download Receipt</button>
+                        <button class="btn btn-secondary" onclick="continueShopping()">Back to Services</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>KU Campus Services</h3>
+                <p>Making campus life easier and more convenient for students</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#services">Campus Services</a>
+                <a href="#">Textbooks</a>
+                <a href="#">Merchandise</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: services@kampalauniversity.ac.ug</p>
+                <p>Phone: +256 750 123456</p>
+                <p>Location: Student Services Center, Main Campus</p>
+                <p>Hours: Mon-Fri 8:00 AM - 6:00 PM, Sat 9:00 AM - 2:00 PM</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Kampala University. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Cart functionality
+        let cartItems = [];
+        let currentStep = 1;
+        let currentService = null;
+        let userLocation = null;
+        let locationWatchId = null;
+        let map = null;
+        let userMarker = null;
+
+        // DOM Elements
+        const cartIcon = document.getElementById('cartIcon');
+        const cartCount = document.querySelector('.cart-count');
+        const orderModal = document.getElementById('orderModal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const deliveryFields = document.getElementById('deliveryFields');
+        const pickupFields = document.getElementById('pickupFields');
+        const locationStatus = document.getElementById('locationStatus');
+        const locationDetails = document.getElementById('locationDetails');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map
+            initMap();
+            
+            // Add event listeners to all "Order Service" buttons
+            const orderBtns = document.querySelectorAll('.order-btn');
+            
+            orderBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.getAttribute('data-item');
+                    const price = this.getAttribute('data-price');
+                    const img = this.getAttribute('data-img');
+                    
+                    showOrderModal(item, price, img);
+                });
+            });
+            
+            // Modal functionality
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            // Payment method change handler
+            const paymentMethod = document.getElementById('paymentMethod');
+            if (paymentMethod) {
+                paymentMethod.addEventListener('change', togglePaymentFields);
+            }
+            
+            // Delivery option change handler
+            const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]');
+            deliveryOptions.forEach(option => {
+                option.addEventListener('change', toggleDeliveryFields);
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === orderModal) {
+                    closeModal();
+                }
+            });
+            
+            // Initially hide delivery/pickup fields
+            deliveryFields.style.display = 'none';
+            pickupFields.style.display = 'block';
+        });
+
+        // Initialize map
+        function initMap() {
+            // Default to Kampala University coordinates
+            map = L.map('map').setView([0.3476, 32.5825], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add university marker
+            L.marker([0.3476, 32.5825])
+                .addTo(map)
+                .bindPopup('Kampala University Main Campus')
+                .openPopup();
+        }
+
+        // Start location tracking
+        function startLocationTracking() {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+                return;
+            }
+            
+            locationStatus.textContent = 'Locating...';
+            locationStatus.className = 'location-status status-active';
+            
+            // Get current position
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const { latitude, longitude } = position.coords;
+                    userLocation = { lat: latitude, lng: longitude };
+                    
+                    // Update map
+                    map.setView([latitude, longitude], 16);
+                    
+                    // Remove existing marker if any
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+                    
+                    // Add new marker
+                    userMarker = L.marker([latitude, longitude])
+                        .addTo(map)
+                        .bindPopup('Your current location')
+                        .openPopup();
+                    
+                    locationStatus.textContent = 'Location Active';
+                    locationDetails.innerHTML = `
+                        <p><strong>Your location:</strong> Latitude ${latitude.toFixed(4)}, Longitude ${longitude.toFixed(4)}</p>
+                        <p>Your location is now being shared with campus services for better delivery estimation.</p>
+                    `;
+                    
+                    // Start watching position
+                    locationWatchId = navigator.geolocation.watchPosition(
+                        updatePosition,
+                        handleLocationError,
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                    );
+                },
+                handleLocationError,
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        }
+
+        // Update user position
+        function updatePosition(position) {
+            const { latitude, longitude } = position.coords;
+            userLocation = { lat: latitude, lng: longitude };
+            
+            // Update marker position
+            if (userMarker) {
+                userMarker.setLatLng([latitude, longitude]);
+            }
+            
+            // Update location details
+            locationDetails.innerHTML = `
+                <p><strong>Your location:</strong> Latitude ${latitude.toFixed(4)}, Longitude ${longitude.toFixed(4)}</p>
+                <p>Your location is being updated in real-time for accurate service delivery.</p>
+            `;
+        }
+
+        // Handle location errors
+        function handleLocationError(error) {
+            console.error('Error getting location:', error);
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    locationStatus.textContent = 'Location Denied';
+                    locationDetails.innerHTML = '<p>Location access was denied. Please enable location permissions in your browser settings.</p>';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    locationStatus.textContent = 'Location Unavailable';
+                    locationDetails.innerHTML = '<p>Location information is unavailable. Please check your connection and try again.</p>';
+                    break;
+                case error.TIMEOUT:
+                    locationStatus.textContent = 'Location Timeout';
+                    locationDetails.innerHTML = '<p>Location request timed out. Please try again.</p>';
+                    break;
+                default:
+                    locationStatus.textContent = 'Location Error';
+                    locationDetails.innerHTML = '<p>An unknown error occurred while getting your location.</p>';
+                    break;
+            }
+            
+            locationStatus.className = 'location-status status-inactive';
+        }
+
+        // Stop location tracking
+        function stopLocationTracking() {
+            if (locationWatchId !== null) {
+                navigator.geolocation.clearWatch(locationWatchId);
+                locationWatchId = null;
+            }
+            
+            userLocation = null;
+            locationStatus.textContent = 'Location Inactive';
+            locationStatus.className = 'location-status status-inactive';
+            
+            locationDetails.innerHTML = `
+                <p>Your location sharing has been stopped. Location-based services will not be available.</p>
+                <p>Enable location sharing to get accurate delivery estimates and better service.</p>
+            `;
+            
+            // Remove user marker from map
+            if (userMarker) {
+                map.removeLayer(userMarker);
+                userMarker = null;
+            }
+            
+            // Reset map view to university
+            map.setView([0.3476, 32.5825], 15);
+        }
+
+        // Show order modal
+        function showOrderModal(item, price, img) {
+            currentService = { item, price, img };
+            
+            // Set modal content for step 1
+            document.getElementById('orderImg').src = img;
+            document.getElementById('orderItem').textContent = item;
+            document.getElementById('orderPrice').textContent = `Starting from UGX ${Number(price).toLocaleString()}`;
+            
+            // Reset form values
+            document.getElementById('orderDetails').value = '';
+            document.getElementById('urgencyLevel').selectedIndex = 0;
+            document.getElementById('contactMethod').selectedIndex = 0;
+            
+            // Set location checkbox based on whether we have location access
+            document.getElementById('useLocation').checked = (userLocation !== null);
+            document.getElementById('useLocation').disabled = (userLocation === null);
+            
+            // Show modal
+            orderModal.style.display = 'flex';
+            
+            // Reset to step 1
+            goToStep(1);
+            
+            // Update order summary
+            updateOrderSummary();
+        }
+
+        // Close modal
+        function closeModal() {
+            orderModal.style.display = 'none';
+        }
+
+        // Navigate to specific step
+        function goToStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+            
+            // Show the requested step
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+        }
+
+        // Next step
+        function nextStep() {
+            // Validate current step before proceeding
+            if (validateStep(currentStep)) {
+                if (currentStep < 4) {
+                    goToStep(currentStep + 1);
+                    
+                    // If moving to step 3, update the order summary
+                    if (currentStep === 2) {
+                        updateOrderSummary();
+                    }
+                }
+            }
+        }
+
+        // Previous step
+        function prevStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        // Validate step
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    // Validate service details
+                    const details = document.getElementById('orderDetails').value;
+                    if (!details) {
+                        alert('Please provide details about the service you need');
+                        return false;
+                    }
+                    return true;
+                    
+                case 2:
+                    // Validate delivery options
+                    const selectedOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+                    
+                    if (selectedOption === 'delivery' || selectedOption === 'expressDelivery') {
+                        const location = document.getElementById('deliveryLocation').value;
+                        const specificLocation = document.getElementById('specificLocation').value;
+                        
+                        if (!location || !specificLocation) {
+                            alert('Please provide complete delivery location details');
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                    
+                case 3:
+                    // Validate payment method
+                    const paymentMethod = document.getElementById('paymentMethod').value;
+                    if (!paymentMethod) {
+                        alert('Please select a payment method');
+                        return false;
+                    }
+                    
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        // Toggle payment fields based on selected method
+        function togglePaymentFields() {
+            const method = document.getElementById('paymentMethod').value;
+            
+            // Hide all payment fields
+            document.querySelectorAll('.payment-fields').forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Show relevant fields
+            if (method === 'mobile_money') {
+                document.getElementById('mobileMoneyFields').style.display = 'block';
+            } else if (method === 'card') {
+                document.getElementById('cardFields').style.display = 'block';
+            }
+        }
+
+        // Toggle delivery fields based on selected option
+        function toggleDeliveryFields() {
+            const selectedOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+            
+            if (selectedOption === 'pickup') {
+                deliveryFields.style.display = 'none';
+                pickupFields.style.display = 'block';
+            } else {
+                deliveryFields.style.display = 'block';
+                pickupFields.style.display = 'none';
+            }
+            
+            // Update order summary if we're on step 3
+            if (currentStep === 3) {
+                updateOrderSummary();
+            }
+        }
+
+        // Update order summary
+        function updateOrderSummary() {
+            if (!currentService) return;
+            
+            const urgency = document.getElementById('urgencyLevel');
+            const urgencyText = urgency.options[urgency.selectedIndex].text;
+            let urgencyCost = 0;
+            
+            if (urgency.value === 'express') urgencyCost = 5000;
+            if (urgency.value === 'urgent') urgencyCost = 10000;
+            
+            const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+            let deliveryText = '';
+            let deliveryCost = 0;
+            
+            if (deliveryOption === 'pickup') {
+                deliveryText = 'Campus Pickup (Free)';
+            } else if (deliveryOption === 'delivery') {
+                deliveryText = 'Campus Delivery (+ UGX 5,000)';
+                deliveryCost = 5000;
+            } else if (deliveryOption === 'expressDelivery') {
+                deliveryText = 'Express Delivery (+ UGX 10,000)';
+                deliveryCost = 10000;
+            }
+            
+            const basePrice = parseInt(currentService.price);
+            const total = basePrice + urgencyCost + deliveryCost;
+            
+            document.getElementById('summaryItem').textContent = `Service: ${currentService.item}`;
+            document.getElementById('summaryUrgency').textContent = `Urgency: ${urgencyText}`;
+            document.getElementById('summaryDelivery').textContent = `Delivery Option: ${deliveryText}`;
+            document.getElementById('summaryTotal').textContent = `Total: UGX ${total.toLocaleString()}`;
+        }
+
+        // Place order
+        function placeOrder() {
+            // Validate payment info
+            if (!validateStep(3)) return;
+            
+            // Generate order number
+            const orderNumber = 'KUS' + Date.now();
+            
+            const urgency = document.getElementById('urgencyLevel');
+            const urgencyText = urgency.options[urgency.selectedIndex].text;
+            let urgencyCost = 0;
+            
+            if (urgency.value === 'express') urgencyCost = 5000;
+            if (urgency.value === 'urgent') urgencyCost = 10000;
+            
+            const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+            let deliveryText = '';
+            let deliveryCost = 0;
+            
+            if (deliveryOption === 'pickup') {
+                deliveryText = 'Campus Pickup';
+            } else if (deliveryOption === 'delivery') {
+                deliveryText = 'Campus Delivery';
+                deliveryCost = 5000;
+            } else if (deliveryOption === 'expressDelivery') {
+                deliveryText = 'Express Delivery';
+                deliveryCost = 10000;
+            }
+            
+            // Calculate completion time
+            let completionTime = '3-5 business days';
+            if (urgency.value === 'express') completionTime = '1-2 business days';
+            if (urgency.value === 'urgent') completionTime = 'Same day';
+            
+            const basePrice = parseInt(currentService.price);
+            const total = basePrice + urgencyCost + deliveryCost;
+            
+            // Update confirmation page
+            document.getElementById('confOrderNumber').textContent = orderNumber;
+            document.getElementById('confItem').textContent = `${currentService.item}`;
+            document.getElementById('confDelivery').textContent = deliveryText;
+            document.getElementById('confTotal').textContent = total.toLocaleString();
+            document.getElementById('confCompletion').textContent = completionTime;
+            
+            // Move to confirmation step
+            goToStep(4);
+            
+            // Update cart count
+            const cartItems = parseInt(cartCount.textContent);
+            cartCount.textContent = cartItems + 1;
+        }
+
+        // Function to download receipt as PDF
+        function downloadReceipt() {
+            // Create receipt content
+            const receiptContent = `
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <h2>KAMPALA UNIVERSITY</h2>
+                        <p>Campus Services</p>
+                        <p>Order #: ${document.getElementById('confOrderNumber').textContent}</p>
+                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div class="receipt-details">
+                        <div class="receipt-item">
+                            <span>${document.getElementById('confItem').textContent}</span>
+                            <span>UGX ${document.getElementById('confTotal').textContent}</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Delivery: ${document.getElementById('confDelivery').textContent}</span>
+                            <span></span>
+                        </div>
+                    </div>
+                    
+                                        <div class="receipt-total">
+                        <div class="receipt-item">
+                            <span>Total:</span>
+                            <span>UGX ${document.getElementById('confTotal').textContent}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-footer">
+                        <p>Thank you for using our campus services!</p>
+                        <p>Estimated Completion: ${document.getElementById('confCompletion').textContent}</p>
+                        <p>Contact: services@kampalauniversity.ac.ug</p>
+                    </div>
+                </div>
+            `;
+            
+            // Create a temporary container for the receipt
+            const container = document.createElement('div');
+            container.innerHTML = receiptContent;
+            
+            // Set options for PDF generation
+            const options = {
+                margin: 10,
+                filename: 'KU_Service_Receipt.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Generate and download PDF
+            html2pdf().set(options).from(container).save();
+        }
+
+        // Continue shopping function
+        function continueShopping() {
+            // Close the modal
+            closeModal();
+            
+            // Reset form fields
+            document.getElementById('orderForm').reset();
+            document.getElementById('deliveryForm').reset();
+            document.getElementById('paymentForm').reset();
+            
+            // Scroll to services section
+            document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Calculate distance between two coordinates (Haversine formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c; // Distance in kilometers
+            return distance;
+        }
+
+        // Estimate delivery time based on distance
+        function estimateDeliveryTime(distance) {
+            // Base time + time per kilometer
+            const baseTime = 15; // minutes
+            const timePerKm = 3; // minutes per kilometer
+            
+            return Math.round(baseTime + (distance * timePerKm));
+        }
+
+        // Get estimated delivery time for the user's location
+        function getEstimatedDeliveryTime() {
+            if (!userLocation) return null;
+            
+            // University coordinates
+            const universityLat = 0.3476;
+            const universityLng = 32.5825;
+            
+            // Calculate distance
+            const distance = calculateDistance(
+                userLocation.lat, 
+                userLocation.lng,
+                universityLat,
+                universityLng
+            );
+            
+            // Estimate time
+            return estimateDeliveryTime(distance);
+        }
+
+        // Update delivery estimate in the UI
+        function updateDeliveryEstimate() {
+            if (!userLocation) return;
+            
+            const deliveryTime = getEstimatedDeliveryTime();
+            if (deliveryTime) {
+                // Find or create delivery estimate element
+                let estimateElement = document.getElementById('deliveryEstimate');
+                if (!estimateElement) {
+                    estimateElement = document.createElement('div');
+                    estimateElement.id = 'deliveryEstimate';
+                    estimateElement.style.marginTop = '10px';
+                    estimateElement.style.padding = '10px';
+                    estimateElement.style.backgroundColor = '#e8f4fc';
+                    estimateElement.style.borderRadius = '4px';
+                    estimateElement.style.borderLeft = '4px solid #3498db';
+                    locationDetails.appendChild(estimateElement);
+                }
+                
+                estimateElement.innerHTML = `
+                    <p><strong>Delivery Estimate:</strong> Approximately ${deliveryTime} minutes from your current location</p>
+                `;
+            }
+        }
+
+        // Enhanced position update function
+        function updatePosition(position) {
+            const { latitude, longitude } = position.coords;
+            userLocation = { lat: latitude, lng: longitude };
+            
+            // Update marker position
+            if (userMarker) {
+                userMarker.setLatLng([latitude, longitude]);
+            } else {
+                // Add new marker if it doesn't exist
+                userMarker = L.marker([latitude, longitude])
+                    .addTo(map)
+                    .bindPopup('Your current location')
+                    .openPopup();
+            }
+            
+            // Update location details
+            locationDetails.innerHTML = `
+                <p><strong>Your location:</strong> Latitude ${latitude.toFixed(4)}, Longitude ${longitude.toFixed(4)}</p>
+                <p>Your location is being updated in real-time for accurate service delivery.</p>
+            `;
+            
+            // Update delivery estimate
+            updateDeliveryEstimate();
+        }
+
+        // Enhanced start location tracking with delivery estimates
+        function startLocationTracking() {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+                return;
+            }
+            
+            locationStatus.textContent = 'Locating...';
+            locationStatus.className = 'location-status status-active';
+            
+            // Get current position
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const { latitude, longitude } = position.coords;
+                    userLocation = { lat: latitude, lng: longitude };
+                    
+                    // Update map
+                    map.setView([latitude, longitude], 16);
+                    
+                    // Remove existing marker if any
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+                    
+                    // Add new marker
+                    userMarker = L.marker([latitude, longitude])
+                        .addTo(map)
+                        .bindPopup('Your current location')
+                        .openPopup();
+                    
+                    locationStatus.textContent = 'Location Active';
+                    
+                    // Update delivery estimate
+                    updateDeliveryEstimate();
+                    
+                    // Start watching position
+                    locationWatchId = navigator.geolocation.watchPosition(
+                        updatePosition,
+                        handleLocationError,
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                    );
+                },
+                handleLocationError,
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        }
+    </script>
+</body>
+</html>

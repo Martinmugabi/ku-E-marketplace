@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU Discount Program</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .verification-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .benefits-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin: 25px 0 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .eligible {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .not-eligible {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .benefit-card {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .benefit-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .discount-badge {
+            background: #27ae60;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .pricing-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .note {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>KU Textbook Rental & Printing Discount Program</h1>
+            <p class="description">Exclusive discounts for students who have paid 60% or more of their tuition fees</p>
+        </header>
+        
+        <div class="content">
+            <div class="verification-section">
+                <h2>Verify Your Eligibility</h2>
+                <p>Enter your student information to check if you qualify for discounts on textbook rentals and printing services.</p>
+                
+                <div class="form-group">
+                    <label for="studentId">Student ID Number</label>
+                    <input type="text" id="studentId" placeholder="Enter your student ID">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tuitionPaid">Percentage of Tuition Paid (%)</label>
+                    <input type="number" id="tuitionPaid" min="0" max="100" placeholder="Enter percentage (e.g., 60)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="faculty">Faculty/Department</label>
+                    <select id="faculty">
+                        <option value="">Select your faculty</option>
+                        <option value="business">Business Administration</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="medicine">Medicine</option>
+                        <option value="law">Law</option>
+                        <option value="arts">Arts & Sciences</option>
+                        <option value="education">Education</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="verifyEligibility()">Check Eligibility</button>
+                
+                <div id="resultBox" class="result-box" style="display: none;">
+                    <!-- Results will be shown here -->
+                </div>
+                
+                <div class="note">
+                    <h4>Note:</h4>
+                    <p>Your tuition payment status will be verified with the university's finance department. Eligibility discounts are applied at the point of purchase.</p>
+                </div>
+            </div>
+            
+            <div class="benefits-section">
+                <h2>Discount Benefits</h2>
+                <p>Students who have paid 60% or more of their tuition fees are eligible for the following discounts:</p>
+                
+                <div class="benefit-card">
+                    <h4>Textbook Rental <span class="discount-badge">25% OFF</span></h4>
+                    <p>Rent required textbooks for the semester at a discounted rate.</p>
+                    <div class="pricing-example">
+                        <p><strong>Example:</strong> UGX 80,000 textbook → <strong>UGX 60,000</strong> after discount</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <h4>Printing Services <span class="discount-badge">40% OFF</span></h4>
+                    <p>Get discounts on all printing services including thesis printing, course materials, and assignments.</p>
+                    <div class="pricing-example">
+                        <p><strong>Example:</strong> UGX 500/page → <strong>UGX 300/page</strong> after discount</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <h4>Stationery Supplies <span class="discount-badge">15% OFF</span></h4>
+                    <p>Discount on notebooks, pens, and other academic supplies from the campus store.</p>
+                    <div class="pricing-example">
+                        <p><strong>Example:</strong> UGX 15,000 notebook set → <strong>UGX 12,750</strong> after discount</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <h4>Special Package Deals</h4>
+                    <p>Combined textbook rental and printing packages at additional discounted rates.</p>
+                    <div class="pricing-example">
+                        <p><strong>Example:</strong> Textbook + 200 pages printing → <strong>35% OFF</strong> total package</p>
+                    </div>
+                </div>
+                
+                <h3>How to Claim Your Discounts</h3>
+                <ol>
+                    <li>Verify your eligibility using the form</li>
+                    <li>Present your student ID at the campus store or printing service</li>
+                    <li>The discount will be applied to your purchase automatically</li>
+                    <li>For online orders, use discount code: <strong>KU60PAID</strong></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function verifyEligibility() {
+            const studentId = document.getElementById('studentId').value;
+            const tuitionPaid = parseInt(document.getElementById('tuitionPaid').value);
+            const faculty = document.getElementById('faculty').value;
+            
+            const resultBox = document.getElementById('resultBox');
+            
+            // Basic validation
+            if (!studentId || isNaN(tuitionPaid) || !faculty) {
+                resultBox.style.display = 'block';
+                resultBox.className = 'result-box not-eligible';
+                resultBox.innerHTML = '<h3>Verification Error</h3><p>Please fill in all fields correctly.</p>';
+                return;
+            }
+            
+            // Check eligibility
+            if (tuitionPaid >= 60) {
+                resultBox.style.display = 'block';
+                resultBox.className = 'result-box eligible';
+                resultBox.innerHTML = `
+                    <h3>Eligibility Verified!</h3>
+                    <p>You qualify for our exclusive discounts program.</p>
+                    <p><strong>Discounts unlocked:</strong></p>
+                    <ul>
+                        <li>25% off textbook rentals</li>
+                        <li>40% off printing services</li>
+                        <li>15% off stationery supplies</li>
+                        <li>Special package deals</li>
+                    </ul>
+                    <p>Your discount code: <strong>KU60PAID</strong></p>
+                    <p>Present your student ID at checkout to claim your discounts.</p>
+                    <button class="btn btn-success" onclick="window.location.href='#textbooks'">Browse Textbooks</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='#printing'">Printing Services</button>
+                `;
+            } else {
+                resultBox.style.display = 'block';
+                resultBox.className = 'result-box not-eligible';
+                resultBox.innerHTML = `
+                    <h3>Not Eligible Yet</h3>
+                    <p>You have paid <strong>${tuitionPaid}%</strong> of your tuition fees.</p>
+                    <p>To qualify for discounts, you need to pay at least <strong>60%</strong> of your tuition fees.</p>
+                    <p>Please visit the finance office to make a payment, then return to verify your eligibility.</p>
+                    <button class="btn" onclick="window.location.href='#finance'">Finance Office Information</button>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

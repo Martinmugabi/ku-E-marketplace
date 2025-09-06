@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU Shop - Merchandise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo h2 {
+            color: #fff;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #3498db;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .category-nav h1 {
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .category-nav p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .category-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .category-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Merchandise Section */
+        .merchandise-section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+        }
+
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: #2980b9;
+        }
+
+        .merchandise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .merchandise-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .merchandise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .merchandise-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .merchandise-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .merchandise-info h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .merchandise-info .category {
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .merchandise-info p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .size-selector {
+            margin-bottom: 1rem;
+        }
+
+        .size-selector select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .merchandise-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .order-preview {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .order-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .payment-fields {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .order-summary {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .confirmation-message {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .confirmation-message i {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        /* Receipt Styles */
+        .receipt {
+            background: white;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .receipt-details {
+            margin-bottom: 20px;
+        }
+
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #eee;
+        }
+
+        .receipt-total {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0 0;
+            margin-top: 3rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .merchandise-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .order-preview {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="category-nav">
+        <h1>KU Official Merchandise</h1>
+        <p>Show your school spirit with our official Kampala University merchandise</p>
+        
+    </div>
+
+    <section class="merchandise-section" id="merchandise">
+        <div class="container">
+            <h2 class="section-title">University Merchandise</h2>
+            <p class="section-subtitle">Wear your pride with our official KU merchandise collection</p>
+            
+            <div class="category-filter">
+                <button class="category-btn active" data-category="all">All Merchandise</button>
+                <button class="category-btn" data-category="clothing">Clothing</button>
+                <button class="category-btn" data-category="accessories">Accessories</button>
+                <button class="category-btn" data-category="gifts">Gifts & Novelties</button>
+            </div>
+            
+            <div class="merchandise-grid">
+                <!-- Product 1 -->
+                <div class="merchandise-card" data-category="clothing">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Official Hoodie">
+                    <div class="merchandise-info">
+                        <h3>KU Official Hoodie</h3>
+                        <p class="category">Clothing</p>
+                        <p>Comfortable university hoodie with official KU logo. Perfect for those chilly lecture halls.</p>
+                        <div class="size-selector">
+                            <select>
+                                <option value="">Select Size</option>
+                                <option value="S">Small</option>
+                                <option value="M">Medium</option>
+                                <option value="L">Large</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 65,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Official Hoodie" 
+                                    data-price="65000" 
+                                    data-img="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="merchandise-card" data-category="clothing">
+                    <img src="https://images.unsplash.com/photo-1521483451569-e33803c0330c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU T-Shirt">
+                    <div class="merchandise-info">
+                        <h3>KU Pride T-Shirt</h3>
+                        <p class="category">Clothing</p>
+                        <p>100% cotton t-shirt with the official university crest. Available in multiple colors.</p>
+                        <div class="size-selector">
+                            <select>
+                                <option value="">Select Size</option>
+                                <option value="S">Small</option>
+                                <option value="M">Medium</option>
+                                <option value="L">Large</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 35,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Pride T-Shirt" 
+                                    data-price="35000" 
+                                    data-img="https://images.unsplash.com/photo-1521483451569-e33803c0330c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="merchandise-card" data-category="accessories">
+                    <img src="https://images.unsplash.com/photo-1533050487297-09b450131914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Baseball Cap">
+                    <div class="merchandise-info">
+                        <h3>KU Baseball Cap</h3>
+                        <p class="category">Accessories</p>
+                        <p>Adjustable baseball cap with KU logo. Perfect for sunny days on campus.</p>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 25,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Baseball Cap" 
+                                    data-price="25000" 
+                                    data-img="https://images.unsplash.com/photo-1533050487297-09b450131914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="merchandise-card" data-category="accessories">
+                    <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Water Bottle">
+                    <div class="merchandise-info">
+                        <h3>KU Water Bottle</h3>
+                        <p class="category">Accessories</p>
+                        <p>Stay hydrated in style with this 1L insulated water bottle featuring the KU logo.</p>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 45,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Water Bottle" 
+                                    data-price="45000" 
+                                    data-img="https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwa90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 5 -->
+                <div class="merchandise-card" data-category="gifts">
+                    <img src="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Mug">
+                    <div class="merchandise-info">
+                        <h3>KU Ceramic Mug</h3>
+                        <p class="category">Gifts & Novelties</p>
+                        <p>Start your day with KU pride! Ceramic mug with official university logo.</p>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 15,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Ceramic Mug" 
+                                    data-price="15000" 
+                                    data-img="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 6 -->
+                <div class="merchandise-card" data-category="gifts">
+                    <img src="https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Keychain">
+                    <div class="merchandise-info">
+                        <h3>KU Keychain</h3>
+                        <p class="category">Gifts & Novelties</p>
+                        <p>Show your school spirit everywhere you go with this durable metal keychain.</p>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 10,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Keychain" 
+                                    data-price="10000" 
+                                    data-img="https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 7 -->
+                <div class="merchandise-card" data-category="clothing">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Jacket">
+                    <div class="merchandise-info">
+                        <h3>KU Varsity Jacket</h3>
+                        <p class="category">Clothing</p>
+                        <p>Classic varsity jacket with KU colors and logo. Perfect for representing your school.</p>
+                        <div class="size-selector">
+                            <select>
+                                <option value="">Select Size</option>
+                                <option value="S">Small</option>
+                                <option value="M">Medium</option>
+                                <option value="L">Large</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 85,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Varsity Jacket" 
+                                    data-price="85000" 
+                                    data-img="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 8 -->
+                <div class="merchandise-card" data-category="accessories">
+                    <img src="https://images.unsplash.com/photo-1588117305388-c2631a279f82?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="KU Backpack">
+                    <div class="merchandise-info">
+                        <h3>KU Campus Backpack</h3>
+                        <p class="category">Accessories</p>
+                        <p>Durable backpack with laptop compartment and KU branding. Perfect for students.</p>
+                        <div class="merchandise-footer">
+                            <span class="price">UGX 75,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="KU Campus Backpack" 
+                                    data-price="75000" 
+                                    data-img="https://images.unsplash.com/photo-1588117305388-c2631a279f82?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="order-process">
+                <!-- Step 1: Order Details -->
+                <div class="step active" id="step1">
+                    <h2>Order Details</h2>
+                    <div class="order-preview">
+                        <img id="orderImg" src="" alt="">
+                        <div>
+                            <h3 id="orderItem"></h3>
+                            <p class="price" id="orderPrice"></p>
+                        </div>
+                    </div>
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="orderQty" min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Size (if applicable)</label>
+                            <select id="orderSize">
+                                <option value="">Not applicable</option>
+                                <option value="S">Small</option>
+                                <option value="M">Medium</option>
+                                <option value="L">Large</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Special Instructions</label>
+                            <textarea id="orderNotes" placeholder="Any special requests (e.g., color preference)"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
+                    </form>
+                </div>
+                
+                <!-- Step 2: Student Info -->
+                <div class="step" id="step2">
+                    <h2>Student Information</h2>
+                    <form id="studentForm">
+                        <div class="form-group">
+                            <label>Student ID Number</label>
+                            <input type="text" id="studentId" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="studentEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="studentPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Faculty/Department</label>
+                            <input type="text" id="studentFaculty" required>
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 3: Payment -->
+                <div class="step" id="step3">
+                    <h2>Payment Method</h2>
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label>Select Payment Method</label>
+                            <select id="paymentMethod" required>
+                                <option value="">Select method</option>
+                                <option value="mobile_money">Mobile Money</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="cash">Cash on Campus Pickup</option>
+                                <option value="student_account">Student Account Billing</option>
+                            </select>
+                        </div>
+                        
+                        <div id="mobileMoneyFields" class="payment-fields">
+                            <div class="form-group">
+                                <label>Mobile Money Provider</label>
+                                <select>
+                                    <option value="mtn">MTN Mobile Money</option>
+                                    <option value="airtel">Airtel Money</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" placeholder="e.g., 0772123456">
+                            </div>
+                        </div>
+                        
+                        <div id="cardFields" class="payment-fields">
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <input type="text" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123">
+                            </div>
+                        </div>
+                        
+                        <div class="order-summary">
+                            <h3>Order Summary</h3>
+                            <p id="summaryItem">Product: </p>
+                            <p id="summarySize">Size: </p>
+                            <p id="summaryQty">Quantity: </p>
+                            <p id="summaryTotal">Total: UGX </p>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="placeOrder()">Complete Order</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 4: Confirmation -->
+                <div class="step" id="step4">
+                    <h2>Order Confirmation</h2>
+                    <div class="confirmation-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Thank You for Your Order!</h3>
+                        <p>Your order has been received and is being processed.</p>
+                        <div id="orderDetails">
+                            <p><strong>Order #:</strong> <span id="confOrderNumber"></span></p>
+                            <p><strong>Item:</strong> <span id="confItem"></span></p>
+                            <p><strong>Size:</strong> <span id="confSize"></span></p>
+                            <p><strong>Total:</strong> UGX <span id="confTotal"></span></p>
+                            <p><strong>Pickup Location:</strong> KU Main Campus Store</p>
+                        </div>
+                        <p>You will receive an email confirmation shortly.</p>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="downloadReceipt()">Download Receipt</button>
+                        <button class="btn btn-secondary" onclick="continueShopping()">Continue Shopping</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>KU Marketplace</h3>
+                <p>The official shop for Kampala University students</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#merchandise">Merchandise</a>
+                <a href="#">Textbooks</a>
+                <a href="#">Electronics</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: shop@kampalauniversity.ac.ug</p>
+                <p>Phone: +256 750 123456</p>
+                <p>Location: Main Campus, Kampala, Uganda</p>
+            </div>
+            
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cartItems = [];
+        let currentStep = 1;
+        let currentProduct = null;
+
+        // DOM Elements
+        const cartIcon = document.getElementById('cartIcon');
+        const cartCount = document.querySelector('.cart-count');
+        const orderModal = document.getElementById('orderModal');
+        const closeModalBtn = document.querySelector('.close-modal');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to all "Order Now" buttons
+            const orderBtns = document.querySelectorAll('.order-btn');
+            
+            orderBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.getAttribute('data-item');
+                    const price = this.getAttribute('data-price');
+                    const img = this.getAttribute('data-img');
+                    
+                    showOrderModal(item, price, img);
+                });
+            });
+            
+            // Modal functionality
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            // Payment method change handler
+            const paymentMethod = document.getElementById('paymentMethod');
+            if (paymentMethod) {
+                paymentMethod.addEventListener('change', togglePaymentFields);
+            }
+            
+            // Quantity change handler
+            const orderQty = document.getElementById('orderQty');
+            if (orderQty) {
+                orderQty.addEventListener('change', updateOrderSummary);
+            }
+            
+            // Category filter functionality
+            const filterButtons = document.querySelectorAll('.category-btn');
+            const merchandiseCards = document.querySelectorAll('.merchandise-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Show/hide merchandise based on filter
+                    merchandiseCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === orderModal) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Show order modal
+        function showOrderModal(item, price, img) {
+            currentProduct = { item, price, img };
+            
+            // Set modal content for step 1
+            document.getElementById('orderImg').src = img;
+            document.getElementById('orderItem').textContent = item;
+            document.getElementById('orderPrice').textContent = `UGX ${Number(price).toLocaleString()}`;
+            
+            // Reset form values
+            document.getElementById('orderQty').value = 1;
+            document.getElementById('orderSize').selectedIndex = 0;
+            document.getElementById('orderNotes').value = '';
+            
+            // Show modal
+            orderModal.style.display = 'flex';
+            
+            // Reset to step 1
+            goToStep(1);
+            
+            // Update order summary
+            updateOrderSummary();
+        }
+
+        // Close modal
+        function closeModal() {
+            orderModal.style.display = 'none';
+        }
+
+        // Navigate to specific step
+        function goToStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+            
+            // Show the requested step
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+        }
+
+        // Next step
+        function nextStep() {
+            // Validate current step before proceeding
+            if (validateStep(currentStep)) {
+                if (currentStep < 4) {
+                    goToStep(currentStep + 1);
+                    
+                    // If moving to step 3, update the order summary
+                    if (currentStep === 2) {
+                        updateOrderSummary();
+                    }
+                }
+            }
+        }
+
+        // Previous step
+        function prevStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        // Validate step
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    // Validate quantity
+                    const qty = document.getElementById('orderQty').value;
+                    if (!qty || qty < 1) {
+                        alert('Please enter a valid quantity');
+                        return false;
+                    }
+                    return true;
+                    
+                case 2:
+                    // Validate student info
+                    const studentId = document.getElementById('studentId').value;
+                    const studentName = document.getElementById('studentName').value;
+                    const studentEmail = document.getElementById('studentEmail').value;
+                    const studentPhone = document.getElementById('studentPhone').value;
+                    const studentFaculty = document.getElementById('studentFaculty').value;
+                    
+                    if (!studentId || !studentName || !studentEmail || !studentPhone || !studentFaculty) {
+                        alert('Please fill in all student information fields');
+                        return false;
+                    }
+                    
+                    // Simple email validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(studentEmail)) {
+                        alert('Please enter a valid email address');
+                        return false;
+                    }
+                    
+                    return true;
+                    
+                case 3:
+                    // Validate payment method
+                    const paymentMethod = document.getElementById('paymentMethod').value;
+                    if (!paymentMethod) {
+                        alert('Please select a payment method');
+                        return false;
+                    }
+                    
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        // Toggle payment fields based on selected method
+        function togglePaymentFields() {
+            const method = document.getElementById('paymentMethod').value;
+            
+            // Hide all payment fields
+            document.querySelectorAll('.payment-fields').forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Show relevant fields
+            if (method === 'mobile_money') {
+                document.getElementById('mobileMoneyFields').style.display = 'block';
+            } else if (method === 'card') {
+                document.getElementById('cardFields').style.display = 'block';
+            }
+        }
+
+        // Update order summary
+        function updateOrderSummary() {
+            if (!currentProduct) return;
+            
+            const quantity = parseInt(document.getElementById('orderQty').value) || 1;
+            const sizeSelect = document.getElementById('orderSize');
+            const size = sizeSelect.options[sizeSelect.selectedIndex].text;
+            
+            const total = quantity * currentProduct.price;
+            
+            document.getElementById('summaryItem').textContent = `Product: ${currentProduct.item}`;
+            document.getElementById('summarySize').textContent = `Size: ${size}`;
+            document.getElementById('summaryQty').textContent = `Quantity: ${quantity}`;
+            document.getElementById('summaryTotal').textContent = `Total: UGX ${total.toLocaleString()}`;
+        }
+
+        // Place order
+        function placeOrder() {
+            // Validate payment info
+            if (!validateStep(3)) return;
+            
+            // In a real application, you would send the order to a server here
+            // For this example, we'll just generate a fake order number
+            
+            const orderNumber = 'KUM' + Date.now();
+            const quantity = parseInt(document.getElementById('orderQty').value) || 1;
+            const sizeSelect = document.getElementById('orderSize');
+            const size = sizeSelect.options[sizeSelect.selectedIndex].text;
+            
+            const total = quantity * currentProduct.price;
+            
+            // Update confirmation page
+            document.getElementById('confOrderNumber').textContent = orderNumber;
+            document.getElementById('confItem').textContent = `${currentProduct.item} (x${quantity})`;
+            document.getElementById('confSize').textContent = size;
+            document.getElementById('confTotal').textContent = total.toLocaleString();
+            
+            // Move to confirmation step
+            goToStep(4);
+            
+            // Update cart count
+            const cartItems = parseInt(cartCount.textContent);
+            cartCount.textContent = cartItems + quantity;
+        }
+
+        // Function to download receipt as PDF
+        function downloadReceipt() {
+            // Create receipt content
+            const receiptContent = `
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <h2>KAMPALA UNIVERSITY</h2>
+                        <p>Official Merchandise Store</p>
+                        <p>Order #: ${document.getElementById('confOrderNumber').textContent}</p>
+                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div class="receipt-details">
+                        <div class="receipt-item">
+                            <span>${document.getElementById('confItem').textContent}</span>
+                            <span>UGX ${document.getElementById('confTotal').textContent}</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Size: ${document.getElementById('confSize').textContent}</span>
+                            <span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-total">
+                        <div class="receipt-item">
+                            <span>Total:</span>
+                            <span>UGX ${document.getElementById('confTotal').textContent}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-footer">
+                        <p>Thank you for your purchase!</p>
+                        <p>Pickup Location: KU Main Campus Store</p>
+                        <p>Contact: shop@kampalauniversity.ac.ug</p>
+                    </div>
+                </div>
+            `;
+            
+            // Create a temporary container for the receipt
+            const container = document.createElement('div');
+            container.innerHTML = receiptContent;
+            
+            // Set options for PDF generation
+            const options = {
+                margin: 10,
+                filename: 'KU_Merchandise_Receipt.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Generate and download PDF
+            html2pdf().set(options).from(container).save();
+        }
+
+        // Continue shopping function
+        function continueShopping() {
+            // Close the modal
+            closeModal();
+            
+            // Reset form fields
+            document.getElementById('studentForm').reset();
+            document.getElementById('paymentForm').reset();
+            
+            // Scroll to merchandise section
+            document.getElementById('merchandise').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU Shop - Stationery & Printing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo h2 {
+            color: #fff;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #3498db;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .category-nav h1 {
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .category-nav p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .category-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .category-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Stationery Section */
+        .stationery-section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+        }
+
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: #2980b9;
+        }
+
+        .stationery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .stationery-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stationery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .stationery-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stationery-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stationery-info h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .stationery-info .category {
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .stationery-info p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .printing-options {
+            margin-bottom: 1rem;
+        }
+
+        .printing-options select, .printing-options input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stationery-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .order-preview {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .order-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .payment-fields {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .order-summary {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .confirmation-message {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .confirmation-message i {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        /* Receipt Styles */
+        .receipt {
+            background: white;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .receipt-details {
+            margin-bottom: 20px;
+        }
+
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #eee;
+        }
+
+        .receipt-total {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0 0;
+            margin-top: 3rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .stationery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .order-preview {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Printing Services */
+        .printing-service {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .printing-service h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .printing-package {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        .printing-package h5 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: #3498db;
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="category-nav">
+        <h1>KU Stationery </h1>
+        <p>All your academic printing needs and stationery supplies in one place</p>
+        
+    </div>
+
+    <section class="stationery-section" id="stationery">
+        <div class="container">
+            <h2 class="section-title">Stationery & Printing Services</h2>
+            <p class="section-subtitle">From basic supplies to professional printing services for all your coursework</p>
+            
+            <div class="category-filter">
+                <button class="category-btn active" data-category="all">All Services</button>
+                <button class="category-btn" data-category="printing">Printing Services</button>
+                <button class="category-btn" data-category="stationery">Stationery Supplies</button>
+                <button class="category-btn" data-category="packages">Printing Packages</button>
+            </div>
+            
+            <div class="stationery-grid">
+                <!-- Printing Service 1 -->
+                <div class="stationery-card" data-category="printing">
+                    <img src="https://images.unsplash.com/photo-1588200908342-23b585c03e26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Thesis Printing">
+                    <div class="stationery-info">
+                        <h3>Thesis & Dissertation Printing</h3>
+                        <p class="category">Printing Services</p>
+                        <p>Professional printing and binding for your thesis, dissertation, or research paper.</p>
+                        
+                        <div class="printing-service">
+                            <h4>Printing Options:</h4>
+                            <div class="printing-options">
+                                <select class="print-option">
+                                    <option value="basic">Basic B&W Printing - UGX 500/page</option>
+                                    <option value="color">Color Printing - UGX 1,500/page</option>
+                                    <option value="premium">Premium Quality - UGX 2,000/page</option>
+                                </select>
+                                <select class="binding-option">
+                                    <option value="none">No Binding - UGX 0</option>
+                                    <option value="spiral">Spiral Binding - UGX 10,000</option>
+                                    <option value="hard">Hardcover Binding - UGX 25,000</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="file-upload" onclick="document.getElementById('fileUpload').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload your document for printing</p>
+                            <input type="file" id="fileUpload" style="display: none;">
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">From UGX 500/page</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Thesis Printing Service" 
+                                    data-price="500" 
+                                    data-img="https://images.unsplash.com/photo-1588200908342-23b585c03e26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Printing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Printing Service 2 -->
+                <div class="stationery-card" data-category="printing">
+                    <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Poster Printing">
+                    <div class="stationery-info">
+                        <h3>Poster & Presentation Printing</h3>
+                        <p class="category">Printing Services</p>
+                        <p>High-quality poster printing for academic presentations, conferences, and research displays.</p>
+                        
+                        <div class="printing-service">
+                            <h4>Printing Options:</h4>
+                            <div class="printing-options">
+                                <select class="size-option">
+                                    <option value="a4">A4 - UGX 3,000</option>
+                                    <option value="a3">A3 - UGX 5,000</option>
+                                    <option value="a2">A2 - UGX 10,000</option>
+                                    <option value="a1">A1 - UGX 20,000</option>
+                                    <option value="a0">A0 - UGX 35,000</option>
+                                </select>
+                                <select class="paper-option">
+                                    <option value="standard">Standard Paper - UGX 0</option>
+                                    <option value="glossy">Glossy Paper - UGX 5,000</option>
+                                    <option value="premium">Premium Matte - UGX 7,000</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="file-upload" onclick="document.getElementById('fileUpload2').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload your poster</p>
+                            <input type="file" id="fileUpload2" style="display: none;">
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">From UGX 3,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Poster Printing Service" 
+                                    data-price="3000" 
+                                    data-img="https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Printing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stationery Item 1 -->
+                <div class="stationery-card" data-category="stationery">
+                    <img src="https://images.unsplash.com/photo-1531346680769-a1d79b57de5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Notebooks">
+                    <div class="stationery-info">
+                        <h3>Premium Notebook Set</h3>
+                        <p class="category">Stationery Supplies</p>
+                        <p>Set of 5 high-quality notebooks with KU logo. Perfect for taking lecture notes.</p>
+                        
+                        <div class="printing-options">
+                            <select>
+                                <option value="1">1 Set (5 notebooks) - UGX 15,000</option>
+                                <option value="2">2 Sets (10 notebooks) - UGX 28,000</option>
+                                <option value="3">3 Sets (15 notebooks) - UGX 40,000</option>
+                            </select>
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">UGX 15,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Premium Notebook Set" 
+                                    data-price="15000" 
+                                    data-img="https://images.unsplash.com/photo-1531346680769-a1d79b57de5c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                               <!-- Stationery Item 2 -->
+                <div class="stationery-card" data-category="stationery">
+                    <img src="https://images.unsplash.com/photo-1625758473788-c799ad6c12bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Pen Set">
+                    <div class="stationery-info">
+                        <h3>Professional Pen Set</h3>
+                        <p class="category">Stationery Supplies</p>
+                        <p>Set of 5 premium pens with different ink colors. Perfect for note-taking and exams.</p>
+                        
+                        <div class="printing-options">
+                            <select>
+                                <option value="1">1 Set (5 pens) - UGX 12,000</option>
+                                <option value="2">2 Sets (10 pens) - UGX 22,000</option>
+                                <option value="3">3 Sets (15 pens) - UGX 30,000</option>
+                            </select>
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">UGX 12,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Professional Pen Set" 
+                                    data-price="12000" 
+                                    data-img="https://images.unsplash.com/photo-1625758473788-c799aad6c12bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Printing Package 1 -->
+                <div class="stationery-card" data-category="packages">
+                    <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Thesis Package">
+                    <div class="stationery-info">
+                        <h3>Thesis Complete Package</h3>
+                        <p class="category">Printing Packages</p>
+                        <p>Complete thesis package including printing, binding, and cover design services.</p>
+                        
+                        <div class="printing-package">
+                            <h5>Package Includes:</h5>
+                            <ul>
+                                <li>100 pages premium printing</li>
+                                <li>Hardcover binding</li>
+                                <li>Custom cover design</li>
+                                <li>3 rounds of revisions</li>
+                                <li>Plastic protective cover</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="file-upload" onclick="document.getElementById('fileUpload3').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Upload your thesis document</p>
+                            <input type="file" id="fileUpload3" style="display: none;">
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">UGX 120,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Thesis Complete Package" 
+                                    data-price="120000" 
+                                    data-img="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Package
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Printing Package 2 -->
+                <div class="stationery-card" data-category="packages">
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Student Package">
+                    <div class="stationery-info">
+                        <h3>Student Essentials Package</h3>
+                        <p class="category">Printing Packages</p>
+                        <p>Everything a student needs for the semester: printing, notebooks, and writing supplies.</p>
+                        
+                        <div class="printing-package">
+                            <h5>Package Includes:</h5>
+                            <ul>
+                                <li>200 pages of printing</li>
+                                <li>3 notebooks</li>
+                                <li>Pen set (5 pens)</li>
+                                <li>Stapler & staples</li>
+                                <li>Folder for organization</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">UGX 55,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Student Essentials Package" 
+                                    data-price="55000" 
+                                    data-img="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Package
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stationery Item 3 -->
+                <div class="stationery-card" data-category="stationery">
+                    <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Stapler">
+                    <div class="stationery-info">
+                        <h3>Heavy-Duty Stapler</h3>
+                        <p class="category">Stationery Supplies</p>
+                        <p>Durable stapler that can staple up to 50 pages. Includes 1000 staples.</p>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">UGX 18,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Heavy-Duty Stapler" 
+                                    data-price="18000" 
+                                    data-img="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Printing Service 3 -->
+                <div class="stationery-card" data-category="printing">
+                    <img src="https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Bulk Printing">
+                    <div class="stationery-info">
+                        <h3>Bulk Document Printing</h3>
+                        <p class="category">Printing Services</p>
+                        <p>Economical printing for large documents, lecture notes, or study materials.</p>
+                        
+                        <div class="printing-service">
+                            <h4>Printing Options:</h4>
+                            <div class="printing-options">
+                                <select class="bulk-option">
+                                    <option value="50">50 pages - UGX 3,000</option>
+                                    <option value="100">100 pages - UGX 5,500</option>
+                                    <option value="200">200 pages - UGX 10,000</option>
+                                    <option value="500">500 pages - UGX 22,000</option>
+                                </select>
+                                <select class="binding-option">
+                                    <option value="none">No Binding - UGX 0</option>
+                                    <option value="plastic">Plastic Comb Binding - UGX 5,000</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="file-upload" onclick="document.getElementById('fileUpload4').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Upload documents for bulk printing</p>
+                            <input type="file" id="fileUpload4" style="display: none;" multiple>
+                        </div>
+                        
+                        <div class="stationery-footer">
+                            <span class="price">From UGX 3,000</span>
+                            <button class="btn btn-small btn-primary order-btn" 
+                                    data-item="Bulk Document Printing" 
+                                    data-price="3000" 
+                                    data-img="https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80">
+                                Order Printing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="order-process">
+                <!-- Step 1: Order Details -->
+                <div class="step active" id="step1">
+                    <h2>Order Details</h2>
+                    <div class="order-preview">
+                        <img id="orderImg" src="" alt="">
+                        <div>
+                            <h3 id="orderItem"></h3>
+                            <p class="price" id="orderPrice"></p>
+                        </div>
+                    </div>
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="orderQty" min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Printing Options (if applicable)</label>
+                            <select id="orderOptions">
+                                <option value="standard">Standard - UGX 500/page</option>
+                                <option value="color">Color Printing - UGX 1,500/page</option>
+                                <option value="premium">Premium - UGX 2,000/page</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Binding Options (if applicable)</label>
+                            <select id="orderBinding">
+                                <option value="none">No Binding - UGX 0</option>
+                                <option value="spiral">Spiral Binding - UGX 10,000</option>
+                                <option value="hard">Hardcover - UGX 25,000</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Special Instructions</label>
+                            <textarea id="orderNotes" placeholder="Any special instructions for your order"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
+                    </form>
+                </div>
+                
+                <!-- Step 2: Student Info -->
+                <div class="step" id="step2">
+                    <h2>Student Information</h2>
+                    <form id="studentForm">
+                        <div class="form-group">
+                            <label>Student ID Number</label>
+                            <input type="text" id="studentId" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="studentEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="studentPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Faculty/Department</label>
+                            <input type="text" id="studentFaculty" required>
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 3: Payment -->
+                <div class="step" id="step3">
+                    <h2>Payment Method</h2>
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label>Select Payment Method</label>
+                            <select id="paymentMethod" required>
+                                <option value="">Select method</option>
+                                <option value="mobile_money">Mobile Money</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="cash">Cash on Campus Pickup</option>
+                                <option value="student_account">Student Account Billing</option>
+                            </select>
+                        </div>
+                        
+                        <div id="mobileMoneyFields" class="payment-fields">
+                            <div class="form-group">
+                                <label>Mobile Money Provider</label>
+                                <select>
+                                    <option value="mtn">MTN Mobile Money</option>
+                                    <option value="airtel">Airtel Money</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" placeholder="e.g., 0772123456">
+                            </div>
+                        </div>
+                        
+                        <div id="cardFields" class="payment-fields">
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <input type="text" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123">
+                            </div>
+                        </div>
+                        
+                        <div class="order-summary">
+                            <h3>Order Summary</h3>
+                            <p id="summaryItem">Product: </p>
+                            <p id="summaryOptions">Printing Options: </p>
+                            <p id="summaryBinding">Binding: </p>
+                            <p id="summaryQty">Quantity: </p>
+                            <p id="summaryTotal">Total: UGX </p>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="placeOrder()">Complete Order</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 4: Confirmation -->
+                <div class="step" id="step4">
+                    <h2>Order Confirmation</h2>
+                    <div class="confirmation-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Thank You for Your Order!</h3>
+                        <p>Your order has been received and is being processed.</p>
+                        <div id="orderDetails">
+                            <p><strong>Order #:</strong> <span id="confOrderNumber"></span></p>
+                            <p><strong>Item:</strong> <span id="confItem"></span></p>
+                            <p><strong>Printing Options:</strong> <span id="confOptions"></span></p>
+                            <p><strong>Binding:</strong> <span id="confBinding"></span></p>
+                            <p><strong>Total:</strong> UGX <span id="confTotal"></span></p>
+                            <p><strong>Pickup Location:</strong> KU Printing Services, Main Campus</p>
+                            <p><strong>Estimated Ready:</strong> <span id="confReadyTime"></span></p>
+                        </div>
+                        <p>You will receive an email confirmation shortly.</p>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="downloadReceipt()">Download Receipt</button>
+                        <button class="btn btn-secondary" onclick="continueShopping()">Continue Shopping</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>KU Marketplace</h3>
+                <p>The official shop for Kampala University students</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#stationery">Stationery & Printing</a>
+                <a href="#">Textbooks</a>
+                <a href="#">Merchandise</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: printing@kampalauniversity.ac.ug</p>
+                <p>Phone: +256 750 123456</p>
+                <p>Location: Printing Services, Main Campus Library</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Kampala University. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cartItems = [];
+        let currentStep = 1;
+        let currentProduct = null;
+
+        // DOM Elements
+        const cartIcon = document.getElementById('cartIcon');
+        const cartCount = document.querySelector('.cart-count');
+        const orderModal = document.getElementById('orderModal');
+        const closeModalBtn = document.querySelector('.close-modal');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to all "Order Now" buttons
+            const orderBtns = document.querySelectorAll('.order-btn');
+            
+            orderBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.getAttribute('data-item');
+                    const price = this.getAttribute('data-price');
+                    const img = this.getAttribute('data-img');
+                    
+                    showOrderModal(item, price, img);
+                });
+            });
+            
+            // Modal functionality
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            // Payment method change handler
+            const paymentMethod = document.getElementById('paymentMethod');
+            if (paymentMethod) {
+                paymentMethod.addEventListener('change', togglePaymentFields);
+            }
+            
+            // Quantity change handler
+            const orderQty = document.getElementById('orderQty');
+            if (orderQty) {
+                orderQty.addEventListener('change', updateOrderSummary);
+            }
+            
+            // Category filter functionality
+            const filterButtons = document.querySelectorAll('.category-btn');
+            const stationeryCards = document.querySelectorAll('.stationery-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Show/hide stationery items based on filter
+                    stationeryCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === orderModal) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Show order modal
+        function showOrderModal(item, price, img) {
+            currentProduct = { item, price, img };
+            
+            // Set modal content for step 1
+            document.getElementById('orderImg').src = img;
+            document.getElementById('orderItem').textContent = item;
+            document.getElementById('orderPrice').textContent = `Starting from UGX ${Number(price).toLocaleString()}`;
+            
+            // Reset form values
+            document.getElementById('orderQty').value = 1;
+            document.getElementById('orderOptions').selectedIndex = 0;
+            document.getElementById('orderBinding').selectedIndex = 0;
+            document.getElementById('orderNotes').value = '';
+            
+            // Show modal
+            orderModal.style.display = 'flex';
+            
+            // Reset to step 1
+            goToStep(1);
+            
+            // Update order summary
+            updateOrderSummary();
+        }
+
+        // Close modal
+        function closeModal() {
+            orderModal.style.display = 'none';
+        }
+
+        // Navigate to specific step
+        function goToStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+            
+            // Show the requested step
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+        }
+
+        // Next step
+        function nextStep() {
+            // Validate current step before proceeding
+            if (validateStep(currentStep)) {
+                if (currentStep < 4) {
+                    goToStep(currentStep + 1);
+                    
+                    // If moving to step 3, update the order summary
+                    if (currentStep === 2) {
+                        updateOrderSummary();
+                    }
+                }
+            }
+        }
+
+        // Previous step
+        function prevStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        // Validate step
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    // Validate quantity
+                    const qty = document.getElementById('orderQty').value;
+                    if (!qty || qty < 1) {
+                        alert('Please enter a valid quantity');
+                        return false;
+                    }
+                    return true;
+                    
+                case 2:
+                    // Validate student info
+                    const studentId = document.getElementById('studentId').value;
+                    const studentName = document.getElementById('studentName').value;
+                    const studentEmail = document.getElementById('studentEmail').value;
+                    const studentPhone = document.getElementById('studentPhone').value;
+                    const studentFaculty = document.getElementById('studentFaculty').value;
+                    
+                    if (!studentId || !studentName || !studentEmail || !studentPhone || !studentFaculty) {
+                        alert('Please fill in all student information fields');
+                        return false;
+                    }
+                    
+                    // Simple email validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(studentEmail)) {
+                        alert('Please enter a valid email address');
+                        return false;
+                    }
+                    
+                    return true;
+                    
+                case 3:
+                    // Validate payment method
+                    const paymentMethod = document.getElementById('paymentMethod').value;
+                    if (!paymentMethod) {
+                        alert('Please select a payment method');
+                        return false;
+                    }
+                    
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        // Toggle payment fields based on selected method
+        function togglePaymentFields() {
+            const method = document.getElementById('paymentMethod').value;
+            
+            // Hide all payment fields
+            document.querySelectorAll('.payment-fields').forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Show relevant fields
+            if (method === 'mobile_money') {
+                document.getElementById('mobileMoneyFields').style.display = 'block';
+            } else if (method === 'card') {
+                document.getElementById('cardFields').style.display = 'block';
+            }
+        }
+
+        // Update order summary
+        function updateOrderSummary() {
+            if (!currentProduct) return;
+            
+            const quantity = parseInt(document.getElementById('orderQty').value) || 1;
+            const options = document.getElementById('orderOptions');
+            const binding = document.getElementById('orderBinding');
+            
+            // Calculate additional costs based on options
+            let optionsCost = 0;
+            if (options.value === 'color') optionsCost = 1000; // Additional 1000 per page for color
+            if (options.value === 'premium') optionsCost = 1500; // Additional 1500 per page for premium
+            
+            let bindingCost = 0;
+            if (binding.value === 'spiral') bindingCost = 10000;
+            if (binding.value === 'hard') bindingCost = 25000;
+            
+            // Calculate total (base price + options cost) * quantity + binding cost
+            const basePrice = parseInt(currentProduct.price);
+            const total = (basePrice + optionsCost) * quantity + bindingCost;
+            
+            document.getElementById('summaryItem').textContent = `Product: ${currentProduct.item}`;
+            document.getElementById('summaryOptions').textContent = `Printing Options: ${options.options[options.selectedIndex].text}`;
+            document.getElementById('summaryBinding').textContent = `Binding: ${binding.options[binding.selectedIndex].text}`;
+            document.getElementById('summaryQty').textContent = `Quantity: ${quantity}`;
+            document.getElementById('summaryTotal').textContent = `Total: UGX ${total.toLocaleString()}`;
+        }
+
+        // Place order
+        function placeOrder() {
+            // Validate payment info
+            if (!validateStep(3)) return;
+            
+            // Generate order number
+            const orderNumber = 'KUP' + Date.now();
+            const quantity = parseInt(document.getElementById('orderQty').value) || 1;
+            const options = document.getElementById('orderOptions');
+            const binding = document.getElementById('orderBinding');
+            
+            // Calculate additional costs
+            let optionsCost = 0;
+            if (options.value === 'color') optionsCost = 1000;
+            if (options.value === 'premium') optionsCost = 1500;
+            
+            let bindingCost = 0;
+            if (binding.value === 'spiral') bindingCost = 10000;
+            if (binding.value === 'hard') bindingCost = 25000;
+            
+            // Calculate total
+            const basePrice = parseInt(currentProduct.price);
+            const total = (basePrice + optionsCost) * quantity + bindingCost;
+            
+            // Estimate ready time (1-3 days for printing services)
+            const readyDate = new Date();
+            readyDate.setDate(readyDate.getDate() + (currentProduct.item.includes('Printing') ? 2 : 1));
+            const readyTime = readyDate.toLocaleDateString();
+            
+            // Update confirmation page
+            document.getElementById('confOrderNumber').textContent = orderNumber;
+            document.getElementById('confItem').textContent = `${currentProduct.item} (x${quantity})`;
+            document.getElementById('confOptions').textContent = options.options[options.selectedIndex].text;
+            document.getElementById('confBinding').textContent = binding.options[binding.selectedIndex].text;
+            document.getElementById('confTotal').textContent = total.toLocaleString();
+            document.getElementById('confReadyTime').textContent = readyTime;
+            
+            // Move to confirmation step
+            goToStep(4);
+        }
+
+        // Function to download receipt as PDF
+        function downloadReceipt() {
+            // Create receipt content
+            const receiptContent = `
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <h2>KAMPALA UNIVERSITY</h2>
+                        <p>Printing & Stationery Services</p>
+                        <p>Order #: ${document.getElementById('confOrderNumber').textContent}</p>
+                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div class="receipt-details">
+                        <div class="receipt-item">
+                            <span>${document.getElementById('confItem').textContent}</span>
+                            <span>UGX ${document.getElementById('confTotal').textContent}</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>${document.getElementById('confOptions').textContent}</span>
+                            <span></span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>${document.getElementById('confBinding').textContent}</span>
+                            <span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-total">
+                        <div class="receipt-item">
+                            <span>Total:</span>
+                            <span>UGX ${document.getElementById('confTotal').textContent}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-footer">
+                        <p>Thank you for your order!</p>
+                        <p>Pickup: KU Printing Services, Main Campus Library</p>
+                        <p>Estimated Ready: ${document.getElementById('confReadyTime').textContent}</p>
+                        <p>Contact: printing@kampalauniversity.ac.ug</p>
+                    </div>
+                </div>
+            `;
+            
+            // Create a temporary container for the receipt
+            const container = document.createElement('div');
+            container.innerHTML = receiptContent;
+            
+            // Set options for PDF generation
+            const options = {
+                margin: 10,
+                filename: 'KU_Printing_Receipt.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Generate and download PDF
+            html2pdf().set(options).from(container).save();
+        }
+
+        // Continue shopping function
+        function continueShopping() {
+            // Close the modal
+            closeModal();
+            
+            // Reset form fields
+            document.getElementById('studentForm').reset();
+            document.getElementById('paymentForm').reset();
+            
+            // Scroll to stationery section
+            document.getElementById('stationery').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
